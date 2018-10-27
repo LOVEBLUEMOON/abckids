@@ -1,22 +1,33 @@
-
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorPrimaryDark">
-    <!--android:background="@color/colorAccent"-->
+
     <ImageView
         android:id="@+id/bing_pic_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id = "@+id/swipe_fresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
 <ScrollView
+
     android:id="@+id/weather_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    android:overScrollMode="never"
-    >
+    android:overScrollMode="never">
+
     <LinearLayout
 
         android:orientation="vertical"
@@ -28,6 +39,19 @@
         <include layout="@layout/forecast"/>
         <include layout="@layout/aqi"/>
         <include layout="@layout/suggestion"/>
+
     </LinearLayout>
+
 </ScrollView>
+
+
+
+   </android.support.v4.widget.SwipeRefreshLayout>
+        <fragment
+            android:id="@+id/fragment"
+            android:name="com.example.difficulty.ChooseAreaFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"/>
+    </android.support.v4.widget.DrawerLayout>
 </FrameLayout>

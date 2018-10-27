@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Forecast {
 
+    @SerializedName("date")
     public String data;
 
     @SerializedName("tmp")

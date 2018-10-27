@@ -10,6 +10,7 @@ public class Basic {
     @SerializedName("id")
     public String weatherId;
 
+    @SerializedName("update")
     public Updata updata;
 
     public class Updata {

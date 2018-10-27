@@ -5,10 +5,14 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -41,6 +45,11 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView carWashText;
     private TextView sportText;
     private ImageView bingPicImg;
+    public SwipeRefreshLayout swipeRefreshLayout;
+    private String mWeatherId;
+    public DrawerLayout drawerLayout;
+    private Button homeButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +61,16 @@ public class WeatherActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_weather);
         weatherLayout = (ScrollView) findViewById(R.id.weather_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
+        homeButton = (Button) findViewById(R.id.home_button);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_fresh);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         titleCity = (TextView) findViewById(R.id.title_city);
         titleUpdataTime = (TextView) findViewById(R.id.updata_time);
         degreeText = (TextView) findViewById(R.id.degree_text);
@@ -69,7 +88,14 @@ public class WeatherActivity extends AppCompatActivity {
         }else{
             loadBingPic();
         }
-        String  weatherId = getIntent().getStringExtra("weather_id");
+        final String  weatherId = getIntent().getStringExtra("weather_id");
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+//                weatherLayout.setVisibility(View.INVISIBLE);
+                requestWeather(weatherId);
+            }
+        });
         weatherLayout.setVisibility(View.INVISIBLE);
         requestWeather(weatherId);
     }
@@ -103,7 +129,9 @@ public class WeatherActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(WeatherActivity.this, "获取天气失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(WeatherActivity.this, "获取天气失败",
+                                Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
@@ -125,6 +153,7 @@ public class WeatherActivity extends AppCompatActivity {
                         }else{
                             Toast.makeText(WeatherActivity.this, "shibao", Toast.LENGTH_SHORT).show();
                         }
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
@@ -132,11 +161,11 @@ public class WeatherActivity extends AppCompatActivity {
     }
         private void showWeatherInfo(Weather weather){
                 String cityName = weather.basic.cityName;
-//                String updataTime = weather.basic.updata.updataTime.split(" ")[1];
+                String updataTime = weather.basic.updata.updataTime.split(" ")[1];
                 String degree = weather.now.temperature+"C";
                 String weatherInfo = weather.now.more.info;
                 titleCity.setText(cityName);
-//                titleUpdataTime.setText(updataTime);
+                titleUpdataTime.setText(updataTime);
                 degreeText.setText(degree);
                 weatherInfoText.setText(weatherInfo);
                 forecastLayout.removeAllViews();
